@@ -1,0 +1,2 @@
+Improvements:
+1. Gunakan h1 - h6 untuk title
