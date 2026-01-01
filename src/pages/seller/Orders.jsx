@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAppContext } from "../../context/AppContext";
-import { assets, dummyOrders } from "../../assets/assets";
+import { assets } from "../../assets/assets";
 import toast from "react-hot-toast";
 
 const Orders = () => {
@@ -21,6 +21,7 @@ const Orders = () => {
 
 	useEffect(() => {
 		fetchOrders();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (
