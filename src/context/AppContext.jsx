@@ -1,7 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { dummyProducts } from "../assets/assets";
 import toast from "react-hot-toast";
 import axios from "axios";
 
@@ -13,30 +12,12 @@ export const AppContext = createContext();
 export const AppContextProvider = ({ children }) => {
 	const currency = import.meta.env.VITE_CURRENCY;
 	const navigate = useNavigate();
-	const [user, setUser] = useState(true);
-	const [isSeller, setIsSeller] = useState(false);
+	const [user, setUser] = useState(false);
+	const [isSeller, setIsSeller] = useState(localStorage.getItem("isSeller"));
 	const [showUserLogin, setShowUserLogin] = useState(false);
 	const [products, setProducts] = useState([]);
 	const [cartItems, setCartItems] = useState({});
 	const [searchQuery, setSearchQuery] = useState("");
-
-	// Re-autentikasi
-	useEffect(() => {
-		const interceptor = axios.interceptors.response.use(
-			(response) => response,
-			(error) => {
-				if (error.response && error.response.status === 401) {
-					setUser(null);
-					setIsSeller(false);
-					navigate("/login");
-					setShowUserLogin(true);
-				}
-				return Promise.reject(error);
-			}
-		);
-
-		return () => axios.interceptors.response.eject(interceptor);
-	}, []);
 
 	// Fetch Seller Status
 	const fetchSeller = async () => {
@@ -44,8 +25,9 @@ export const AppContextProvider = ({ children }) => {
 			const { data } = await axios.get("/seller/is-auth");
 			if (data.success) setIsSeller(true);
 			else setIsSeller(false);
+			// eslint-disable-next-line no-unused-vars
 		} catch (error) {
-			console.log("Seller is not logged in: ", error);
+			console.log("Seller is not logged in");
 			setIsSeller(false);
 		}
 	};
@@ -58,8 +40,9 @@ export const AppContextProvider = ({ children }) => {
 				setUser(data.user);
 				setCartItems(data.user.cartItems);
 			} else setUser(null);
+			// eslint-disable-next-line no-unused-vars
 		} catch (error) {
-			console.log("User not logged in: ", error);
+			console.log("User is not logged in");
 			setUser(null);
 		}
 	};
@@ -129,10 +112,11 @@ export const AppContextProvider = ({ children }) => {
 	};
 
 	useEffect(() => {
-		fetchUser();
-		fetchSeller();
+		if (isSeller) fetchSeller();
+		else fetchUser();
+
 		fetchProducts();
-	}, []);
+	}, [isSeller]);
 
 	useEffect(() => {
 		const updateCart = async () => {
@@ -147,6 +131,7 @@ export const AppContextProvider = ({ children }) => {
 		};
 
 		if (user) updateCart();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [cartItems]);
 
 	const value = {
