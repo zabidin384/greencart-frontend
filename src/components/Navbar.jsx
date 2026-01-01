@@ -43,9 +43,6 @@ const Navbar = () => {
 				<NavLink to="/products" className="hover:underline">
 					All Products
 				</NavLink>
-				<NavLink to="/" className="hover:underline">
-					Contact
-				</NavLink>
 
 				{/* Search Input */}
 				<div className="hidden lg:flex items-center text-sm gap-2 border border-gray-300 px-3 rounded-full">
@@ -59,12 +56,14 @@ const Navbar = () => {
 				</div>
 
 				{/* Cart */}
-				<div onClick={() => navigate("/cart")} className="relative cursor-pointer">
-					<img src={assets.nav_cart_icon} alt="cart" className="w-6 opacity-80" />
-					<button className="absolute -top-2 -right-3 text-xs text-white bg-primary w-[18px] h-[18px] rounded-full">
-						{getCartCount()}
-					</button>
-				</div>
+				{user && (
+					<div onClick={() => navigate("/cart")} className="relative cursor-pointer">
+						<img src={assets.nav_cart_icon} alt="cart" className="w-6 opacity-80" />
+						<button className="absolute -top-2 -right-3 text-xs text-white bg-primary w-[18px] h-[18px] rounded-full">
+							{getCartCount()}
+						</button>
+					</div>
+				)}
 
 				{/* User Profile */}
 				{!user ? (
@@ -121,9 +120,6 @@ const Navbar = () => {
 						My Orders
 					</NavLink>
 				)}
-				<NavLink to="/" onClick={() => setOpen(false)}>
-					Contact
-				</NavLink>
 				{!user ? (
 					<button
 						onClick={() => {
